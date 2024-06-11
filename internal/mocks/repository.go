@@ -45,6 +45,7 @@ func (rm *RepositoryMocked) GetSessionByToken(ctx context.Context, token string)
 
 	return &entity.Session{}, nil
 }
+
 func (rm *RepositoryMocked) GetLastUserSession(ctx context.Context, uid uint32) (*entity.Session, error) {
 	switch {
 	case uid == 13:
@@ -56,6 +57,23 @@ func (rm *RepositoryMocked) GetLastUserSession(ctx context.Context, uid uint32) 
 
 	}
 	return nil, serviceErrors.ErrNoRows
+}
+
+func (rm *RepositoryMocked) GetLastSessionByToken(ctx context.Context, token string) (*entity.Session, error) {
+	switch {
+	case token == "valid-token":
+		return &entity.Session{Id: "valid-token", UId: 1, CreatedAt: time.Now()}, nil
+	case token == "bad-token":
+		return nil, serviceErrors.UnauthorizedError
+	case token == "expired":
+		return &entity.Session{Id: "expired", UId: 1, CreatedAt: time.Now().Add(time.Duration(-5) * time.Hour)}, nil
+	case token == "not-last-session-ok":
+		return &entity.Session{Id: "not-last-session-ok", UId: 13, CreatedAt: time.Now()}, nil
+	case token == "not-last-session-not-ok":
+		return &entity.Session{Id: "not-last-session-not-ok", UId: 9999999, CreatedAt: time.Now()}, nil
+	}
+
+	return &entity.Session{}, nil
 }
 
 func NewRepositoryMocked() *RepositoryMocked {
