@@ -7,13 +7,11 @@ WHERE login=$2`
 
 	createSessionSQL = `INSERT INTO sessions (uid, ip) VALUES ($1, $2) RETURNING id, created_at`
 
-	getSessionByTokenIdSQL = `SELECT id, uid, created_at, ip
+	getSessionByTokenSQL = `SELECT id, uid, created_at, ip
 FROM sessions 
 WHERE id=$1`
 
-	getLastUserSessionsSQL = `SELECT id, uid, created_at
-FROM sessions 
-WHERE uid=$1
-ORDER BY created_at DESC 
-LIMIT 1`
+	getLastSessionByTokenSQL = `SELECT id, uid, created_at, ip
+FROM active_sessions 
+WHERE id=$1`
 )

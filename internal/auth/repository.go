@@ -14,7 +14,7 @@ type RepositoryAuth interface {
 	GetUserByLogin(context.Context, string, string) (*entity.User, error)
 	CreateSession(context.Context, uint32, net.IP) (*entity.Session, error)
 	GetSessionByToken(context.Context, string) (*entity.Session, error)
-	GetLastUserSession(context.Context, uint32) (*entity.Session, error)
+	GetLastSessionByToken(context.Context, string) (*entity.Session, error)
 }
 
 type Repository struct {
@@ -72,7 +72,7 @@ func (ur *Repository) CreateSession(ctx context.Context, uid uint32, ip net.IP) 
 	return session, nil
 }
 
-func (ur *Repository) GetSessionByToken(ctx context.Context, tokenId string) (*entity.Session, error) {
+func (ur *Repository) GetSessionByToken(ctx context.Context, token string) (*entity.Session, error) {
 	conn, err := ur.pool.Acquire(ctx)
 	if err != nil {
 		return nil, err
@@ -81,7 +81,7 @@ func (ur *Repository) GetSessionByToken(ctx context.Context, tokenId string) (*e
 
 	session := &entity.Session{}
 
-	if err := conn.QueryRow(ctx, getSessionByTokenIdSQL, tokenId).Scan(
+	if err := conn.QueryRow(ctx, getSessionByTokenSQL, token).Scan(
 		&session.Id,
 		&session.UId,
 		&session.CreatedAt,
@@ -96,7 +96,7 @@ func (ur *Repository) GetSessionByToken(ctx context.Context, tokenId string) (*e
 	return session, nil
 }
 
-func (ur *Repository) GetLastUserSession(ctx context.Context, uId uint32) (*entity.Session, error) {
+func (ur *Repository) GetLastSessionByToken(ctx context.Context, token string) (*entity.Session, error) {
 	conn, err := ur.pool.Acquire(ctx)
 	if err != nil {
 		return nil, err
@@ -105,11 +105,15 @@ func (ur *Repository) GetLastUserSession(ctx context.Context, uId uint32) (*enti
 
 	session := &entity.Session{}
 
-	if err := conn.QueryRow(ctx, getLastUserSessionsSQL, uId).Scan(
+	if err := conn.QueryRow(ctx, getLastSessionByTokenSQL, token).Scan(
 		&session.Id,
 		&session.UId,
 		&session.CreatedAt,
+		&session.Ip,
 	); err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			err = serviceErrors.ErrNoRows
+		}
 		return nil, err
 	}
 

@@ -60,7 +60,6 @@ func TestService_GetSession(t *testing.T) {
 		{"bad-token", serviceErrors.UnauthorizedError},
 		{"expired", serviceErrors.UnauthorizedError},
 		{"not-last-session-ok", nil},
-		{"not-last-session-not-ok", serviceErrors.UnauthorizedError},
 	}
 	for _, tt := range tests {
 		t.Run(tt.token, func(t *testing.T) {

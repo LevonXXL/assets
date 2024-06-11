@@ -11,6 +11,7 @@ type Config struct {
 	AppPort              string
 	PgDBDSN              string
 	SessionDurationHours *time.Duration
+	UseHTTPS             bool
 }
 
 func NewConfig() (*Config, error) {
@@ -27,6 +28,7 @@ func NewConfig() (*Config, error) {
 	sessionDuration := time.Duration(sessionDurationHours) * time.Hour
 
 	cfg := &Config{
+		UseHTTPS:             getEnv("USE_HTTPS", "false") == "true",
 		AppPort:              getEnv("APP_PORT", "8080"),
 		PgDBDSN:              pgDBDSN,
 		SessionDurationHours: &sessionDuration,

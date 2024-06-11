@@ -55,16 +55,6 @@ func (su *Service) GetActiveSessionByToken(ctx context.Context, token string) (*
 		return nil, err
 	}
 
-	lastSession, err := su.repository.GetLastUserSession(ctx, session.UId)
-	if err != nil && !errors.Is(err, serviceErrors.ErrNoRows) {
-		return nil, err
-	}
-
-	//Если токен не последей сессии - ошибка
-	if lastSession != nil && lastSession.Id != session.Id {
-		return nil, serviceErrors.UnauthorizedError
-	}
-
 	//Если не установлена продолжительность сессии - сессии бессрочные,
 	//иначе проверяем условие, что сессия еще не истекла
 	if su.sessionDuration != nil &&

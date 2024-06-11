@@ -47,7 +47,10 @@ func main() {
 		assetsAPI.GetList,
 	)
 
-	log.Printf("HTTP server is started: %s", cfg.AppPort)
+	if cfg.UseHTTPS {
+		log.Printf("https server is started: %s", cfg.AppPort)
+		log.Fatal(http.ListenAndServeTLS(fmt.Sprintf(":%s", cfg.AppPort), "./certs/server.crt", "./certs/server.key", mux))
+	}
+	log.Printf("http server is started: %s", cfg.AppPort)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", cfg.AppPort), mux))
-	//log.Fatal(http.ListenAndServeTLS(fmt.Sprintf(":%s", cfg.AppPort), "./certs/server.crt", "./certs/server.key", mux))
 }

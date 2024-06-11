@@ -20,6 +20,14 @@ PG_DB_DSN='postgresql://user:password@host:port/assets_db' make migration down
 make build
 ```
 
+### Переменные окружения (enviroment):
+```bash 
+APP_PORT=10101;PG_DB_DSN=postgresql://asset:asset-password@127.0.0.1:5432/asset_db
+SESSION_DURATION_HOURS=24
+USE_HTTPS=true //если не true, то будет http
+```
+
+
 ### Пути:
 /api/auth - авторизация (POST)
 
@@ -34,6 +42,11 @@ make build
 ### HTTPS
 В директории /certs лежит самоподписаный сертификат. 
 Для работы по https нужно установить server.crt в доверенные сертификаты системы
+
+в переменных окружения установить
+```bash 
+USE_HTTPS=true
+```
 и добавить в /etc/hosts строку
 
 127.0.0.1  aterentev.lc
