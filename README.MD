@@ -37,7 +37,7 @@ USE_HTTPS=true //если не true, то будет http
 
 /api/delete-asset/{asset_name} - удаление файла asset_name (DELETE)
 
-/api/assets - список файлов (доступны без авторизации) без данных с данными pagination, доступны query параметры: per_page (100 по умолчанию) и page (1 по умолчанию)
+/api/assets - список файлов без поля data с данными pagination, доступны query параметры: per_page (100 по умолчанию) и page (1 по умолчанию)
 
 ### HTTPS
 В директории /certs лежит самоподписаный сертификат. 

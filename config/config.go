@@ -25,14 +25,17 @@ func NewConfig() (*Config, error) {
 		return nil, err
 	}
 
-	sessionDuration := time.Duration(sessionDurationHours) * time.Hour
-
 	cfg := &Config{
-		UseHTTPS:             getEnv("USE_HTTPS", "false") == "true",
-		AppPort:              getEnv("APP_PORT", "8080"),
-		PgDBDSN:              pgDBDSN,
-		SessionDurationHours: &sessionDuration,
+		UseHTTPS: getEnv("USE_HTTPS", "false") == "true",
+		AppPort:  getEnv("APP_PORT", "8080"),
+		PgDBDSN:  pgDBDSN,
 	}
+
+	if sessionDurationHours > 0 {
+		sessionDuration := time.Duration(sessionDurationHours) * time.Hour
+		cfg.SessionDurationHours = &sessionDuration
+	}
+
 	return cfg, nil
 }
 

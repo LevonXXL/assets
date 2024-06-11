@@ -44,7 +44,7 @@ func main() {
 		auth.Middleware(assetsAPI.DeleteAsset, authService),
 	)
 	mux.HandleFunc("/api/assets",
-		assetsAPI.GetList,
+		auth.Middleware(assetsAPI.GetList, authService),
 	)
 
 	if cfg.UseHTTPS {
